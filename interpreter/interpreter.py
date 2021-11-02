@@ -18,8 +18,22 @@ class Interpreter():
 
     def _factor(self) -> float:
         token = self._current_token
-        self._check_token_type(TokenType.INTEGER)
-        return float(token.value)
+        if token.type_ == TokenType.PLUS:
+            self._check_token_type(TokenType.PLUS)
+            return self._factor()
+        if token.type_ == TokenType.MINUS:
+            self._check_token_type(TokenType.MINUS)
+            return -self._factor()
+        if token.type_ == TokenType.INTEGER:
+            self._check_token_type(TokenType.INTEGER)
+            return float(token.value)
+        if token.type_ == TokenType.LPAREN:
+            self._check_token_type(TokenType.LPAREN)
+            result = self._expr()
+            self._check_token_type(TokenType.RPAREN)
+            return result
+        raise InterpreterException("Invalid factor")
+        
 
     def _term(self) -> float:
         result = self._factor()
@@ -32,11 +46,9 @@ class Interpreter():
             elif token.type_ == TokenType.DIV:
                 self._check_token_type(TokenType.DIV)
                 result /= self._factor()
-        
         return result
 
     def _expr(self) -> int:
-        self._current_token = self._lexer.next_()
         ops = [TokenType.PLUS, TokenType.MINUS, TokenType.MUL, TokenType.DIV]
         result = self._term()
         while self._current_token.type_ in ops:
@@ -54,6 +66,8 @@ class Interpreter():
 
     def interpret(self, _text: str):
         self._lexer.init(_text)
+        self._current_token = self._lexer.next_()
+
         return self._expr()
 
     def __call__(self, _text: str) -> int:
