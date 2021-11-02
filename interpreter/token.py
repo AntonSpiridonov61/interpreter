@@ -5,6 +5,9 @@ class TokenType(Enum):
     EOS = auto()
     PLUS = auto()
     MINUS = auto()
+    MUL = auto()
+    DIV = auto()
+
 
 
 class Token():
