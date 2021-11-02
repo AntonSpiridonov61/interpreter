@@ -21,7 +21,7 @@ class Interpreter():
         self._check_token_type(TokenType.INTEGER)
         return float(token.value)
 
-    def _term(self) -> int:
+    def _term(self) -> float:
         result = self._factor()
         ops = [TokenType.MUL, TokenType.DIV]
         while self._current_token.type_ in ops:
