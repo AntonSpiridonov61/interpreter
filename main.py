@@ -1,7 +1,10 @@
-from interpreter import Interpreter
+from interpreter import Parser, Interpreter
 
 if __name__ == "__main__":
-    interpreter = Interpreter()
-    print(interpreter("---2 + 2"))
-    print(interpreter("((2 + 2) * 2) - (3 * 4)"))
-    print(interpreter.interpret("7 / 2 * 3"))
+    parser = Parser()
+    inter = Interpreter()
+
+    print(inter.interpret(parser("3 * (5 + 3)")))
+    print(inter.interpret(parser("1 * 7 + 3")))
+    print(inter.interpret(parser("--1 + 3")))
+    print(inter.interpret(parser("(1 + 1)^3^2")))

@@ -2,22 +2,25 @@ from enum import Enum, auto
 
 class TokenType(Enum):
     INTEGER = auto()
+    FLOAT = auto()
     EOS = auto()
     PLUS = auto()
     MINUS = auto()
     MUL = auto()
     DIV = auto()
+    POW = auto()
+    DOT = auto()
     LPAREN = auto()
     RPAREN = auto()
 
 
 
 class Token():
-    def __init__(self, type_: TokenType, value: str):
+    def __init__(self, type_: TokenType, value: str) -> None:
         self.type_ = type_
         self.value = value
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Token({self.type_}, {self.value})"
 
     def __repr__(self):
