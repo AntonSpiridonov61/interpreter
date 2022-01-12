@@ -1,4 +1,4 @@
-from .token import Token, TokenType
+from token import Token, TokenType
 
 class LexerException(Exception):
     pass
@@ -9,6 +9,10 @@ class Lexer():
         self._pos: int = 0
         self._current_char: str = ''
         self._text: str = ''
+        self.RESERVED_WORDS = {
+            'BEGIN': Token('BEGIN', 'BEGIN'),
+            'END': Token('END', 'END')
+        }
 
     def next_(self) -> Token:
         while self._current_char != None:
@@ -41,6 +45,19 @@ class Lexer():
             if self._current_char == ")":
                 self._forward()
                 return Token(TokenType.RPAREN, char)
+            if self._current_char == ".": 
+                self._forward()
+                return Token(TokenType.DOT, char)
+            if self._current_char == ";":
+                self._forward()
+                return Token(TokenType.SEMI, char)
+            if self._current_char == ':' and self._peek() == '=':
+                self._forward()
+                self._forward()
+                return Token(TokenType.ASSIGN, ':=')
+            if self._current_char.isalpha():
+                return self._var()
+
             raise LexerException(f"Bad token {self._current_char}")
         return Token(TokenType.EOS, None)
 
@@ -62,7 +79,34 @@ class Lexer():
         else:
             self._current_char = self._text[self._pos]
 
+    def _peek(self):
+        peek_pos = self._pos + 1
+        if peek_pos > len(self._text) - 1:
+            return None
+        else:
+            return self._text[peek_pos]
+
+    def _var(self):
+        res = ''
+        while self._current_char and self._current_char.isalpha():
+            res += self._current_char
+            self._forward()
+        token = self.RESERVED_WORDS.get(res, Token(TokenType.VAR, res))
+        return token
+
     def init(self, _text: str) -> int:
         self._text = _text
         self._pos = -1
         self._forward()
+
+if __name__ == "__main__":
+    lexer = Lexer()
+    lexer.init('BEGIN a := 2; END.')
+    print(lexer.next_())
+    print(lexer.next_())
+    print(lexer.next_())
+    print(lexer.next_())
+    print(lexer.next_())
+    print(lexer.next_())
+    print(lexer.next_())
+    print(lexer.next_())

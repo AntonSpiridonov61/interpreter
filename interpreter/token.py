@@ -9,10 +9,12 @@ class TokenType(Enum):
     MUL = auto()
     DIV = auto()
     POW = auto()
-    DOT = auto()
     LPAREN = auto()
     RPAREN = auto()
-
+    DOT = auto()
+    SEMI = auto()
+    ASSIGN = auto()
+    VAR = auto()
 
 
 class Token():
