@@ -1,24 +1,10 @@
 from interpreter import Parser, Interpreter
 
 if __name__ == "__main__":
-    parser = Parser()
-    inter = Interpreter()
-
-    text1 = """
+    interpret = Interpreter()
+    text = """
         BEGIN
-        END.
-    """
-
-    text2 = """
-        BEGIN
-	        x:= 2 + 3 * (2 + 3);
-            y:= 2 / 2 - 2 + 3 * ((1 + 1) + (1 + 1));
-        END.
-    """
-
-    text3 = """
-        BEGIN
-            y := 2;
+            y := 2.7;
             BEGIN
                 a := 3;
                 a := a;
@@ -28,6 +14,7 @@ if __name__ == "__main__":
             x := 11;
         END.
     """
-    
-    inter.interpret(parser(text1))
-    print(inter.GLOBAL_SCOPE)
+    f = open('./textProgram/wrong2.txt')
+    text = f.read()
+    f.close()
+    print(interpret(text))

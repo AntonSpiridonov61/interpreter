@@ -16,7 +16,7 @@ class Parser():
         if self._current_token.type_ == type_:
             self._current_token = self._lexer.next_()
         else:
-            raise ParserException(f"Invalid token order {type_}")
+            raise ParserException(f"Invalid token order {type_}, {self._current_token}")
 
     def _program(self) -> Node:
         node = self._complex_statement()
@@ -82,14 +82,19 @@ class Parser():
             return UnOp(token, self._factor())
         elif token.type_ == TokenType.INTEGER:
             self._check_token_type(TokenType.INTEGER)
-            return Number(token.value)
+            return Number(token)
+        elif token.type_ == TokenType.FLOAT:
+            self._check_token_type(TokenType.FLOAT)
+            return Number(token)
         elif token.type_ == TokenType.LPAREN:
             self._check_token_type(TokenType.LPAREN)
             result = self._expr()
             self._check_token_type(TokenType.RPAREN)
             return result
-        else:
+        elif token.type_ == TokenType.VAR:
             return self._variable()
+        else:
+            raise ParserException(f"Invalid factor {token}")
 
     def _pow(self) -> Node:
         result = self._factor()
@@ -132,5 +137,5 @@ class Parser():
         self._current_token = self._lexer.next_()
         return self._program()
 
-    def __call__(self, text: str) -> int:
+    def __call__(self, text: str):
         return self.parse(text)

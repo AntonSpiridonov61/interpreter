@@ -1,4 +1,5 @@
 from interpreter.token import TokenType
+from interpreter.parser import Parser
 from .node import Node, BinOp, UnOp, Number, Block, Assign, Var, NoOp
 
 
@@ -9,11 +10,9 @@ class Interpreter():
 
     def __init__(self):
         self.GLOBAL_SCOPE = {}
+        self._parser = Parser()
 
-    def interpret(self, tree: Node):
-        return self._visit(tree)
-
-    def _visit(self, node: Node) -> float:
+    def _visit(self, node: Node):
         if isinstance(node, Number):
             return self._visit_number(node)
         elif isinstance(node, BinOp):
@@ -32,10 +31,12 @@ class Interpreter():
         raise InterpreterException("invalid node")
 
 
-    def _visit_number(self, node: Number) -> float:
-        return float(node.token)
+    def _visit_number(self, node: Number):
+        if node.type_ == TokenType.INTEGER:
+            return int(node.value)
+        return float(node.value)
 
-    def _visit_binop(self, node: BinOp) -> float:
+    def _visit_binop(self, node: BinOp):
         op = node.op
         if op.type_ == TokenType.PLUS:
             return self._visit(node.left) + self._visit(node.right)
@@ -49,7 +50,7 @@ class Interpreter():
             return self._visit(node.left) ** self._visit(node.right)
         raise InterpreterException("invalid operator")
 
-    def _visit_unop(self, node: UnOp) -> float:
+    def _visit_unop(self, node: UnOp):
         op = node.op
         if op.type_ == TokenType.PLUS:
             return self._visit(node.right)
@@ -59,6 +60,8 @@ class Interpreter():
     def _visit_block(self, node: Block):
         for child in node.children:
             self._visit(child)
+
+        return self.GLOBAL_SCOPE
 
     def _visit_assign(self, node: Assign):
         var_name = node.left.value
@@ -74,3 +77,13 @@ class Interpreter():
 
     def _visit_noop(self, node: NoOp):
         pass
+
+    def __call__(self, text: str):
+        if not text:
+            return self.GLOBAL_SCOPE
+
+        syntax_tree = self._parser(text)
+        if isinstance(syntax_tree, NoOp):
+            return self.GLOBAL_SCOPE
+
+        return self._visit(syntax_tree)

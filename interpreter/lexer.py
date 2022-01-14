@@ -20,7 +20,7 @@ class Lexer():
                 self._skip()
                 continue
             if self._current_char.isdigit():
-                return Token(TokenType.INTEGER, self._integer())
+                return self._digit()
 
             char = self._current_char
             
@@ -65,12 +65,21 @@ class Lexer():
         while self._current_char and self._current_char.isspace():
             self._forward()
 
-    def _integer(self):
+    def _digit(self):
         result: list = []
         while self._current_char and self._current_char.isdigit():
             result.append(self._current_char)
             self._forward()
-        return "".join(result)
+        if self._current_char == ".": 
+            result.append(self._current_char)
+            self._forward()
+            while self._current_char and self._current_char.isdigit():
+                result.append(self._current_char)
+                self._forward()
+            if result[-1] == ".": 
+                raise LexerException("invalid number")
+            return Token(TokenType.FLOAT, "".join(result))
+        return Token(TokenType.INTEGER, "".join(result))
 
     def _forward(self):
         self._pos += 1
@@ -98,3 +107,24 @@ class Lexer():
         self._text = _text
         self._pos = -1
         self._forward()
+
+# if __name__ == "__main__":
+#     text3 = """
+#         BEGIN
+#             y := 2.5;
+#             BEGIN
+#                 a := 3;
+#                 a := a;
+#                 b := 10 + a + 10 * y / 4;
+#                 c := a - b
+#             END;
+#             x := 11;
+#         END.
+#     """
+
+#     lexer = Lexer()
+#     lexer.init(text3)
+
+#     for i in range(50):
+#         print(lexer.next_())
+

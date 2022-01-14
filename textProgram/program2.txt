@@ -1,0 +1,7 @@
+BEGIN
+    a := 5.0;
+    BEGIN
+        b := 3 -- 3.9;
+        a := -a
+    END;
+END.
