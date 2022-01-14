@@ -1,4 +1,4 @@
-from token import Token, TokenType
+from .token import Token, TokenType
 
 class LexerException(Exception):
     pass
@@ -10,13 +10,13 @@ class Lexer():
         self._current_char: str = ''
         self._text: str = ''
         self.RESERVED_WORDS = {
-            'BEGIN': Token('BEGIN', 'BEGIN'),
-            'END': Token('END', 'END')
+            'BEGIN': Token(TokenType.BEGIN, 'BEGIN'),
+            'END': Token(TokenType.END, 'END'),
         }
 
     def next_(self) -> Token:
         while self._current_char != None:
-            if self._current_char == " ":
+            if self._current_char.isspace():
                 self._skip()
                 continue
             if self._current_char.isdigit():
@@ -62,7 +62,7 @@ class Lexer():
         return Token(TokenType.EOS, None)
 
     def _skip(self):
-        while self._current_char and self._current_char == " ":
+        while self._current_char and self._current_char.isspace():
             self._forward()
 
     def _integer(self):
@@ -98,15 +98,3 @@ class Lexer():
         self._text = _text
         self._pos = -1
         self._forward()
-
-if __name__ == "__main__":
-    lexer = Lexer()
-    lexer.init('BEGIN a := 2; END.')
-    print(lexer.next_())
-    print(lexer.next_())
-    print(lexer.next_())
-    print(lexer.next_())
-    print(lexer.next_())
-    print(lexer.next_())
-    print(lexer.next_())
-    print(lexer.next_())

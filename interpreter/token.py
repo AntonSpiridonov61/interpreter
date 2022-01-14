@@ -15,6 +15,8 @@ class TokenType(Enum):
     SEMI = auto()
     ASSIGN = auto()
     VAR = auto()
+    BEGIN = auto()
+    END = auto()
 
 
 class Token():

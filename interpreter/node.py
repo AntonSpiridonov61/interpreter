@@ -16,7 +16,6 @@ class Number(Node):
         return f"Number({self.token}, {self.token})"
 
 
-
 class BinOp(Node):
 
     def __init__(self, left: Node, op: Token, right: Node) -> None:
@@ -36,3 +35,35 @@ class UnOp(Node):
 
     def __str__(self) -> str:
         return f"UnOp({self.op.value}{self.right})"
+
+
+class Block(Node):
+
+    def __init__(self):
+        self.children = []
+
+    def __str__(self) -> str:
+        return f"Block({self.children})"
+
+
+class Assign(Node):
+
+    def __init__(self, left, op, right):
+        self.left = left
+        self.token = self.op = op
+        self.right = right
+
+    def __str__(self) -> str:
+        return f"Assign{self.token}({self.left}, {self.right})"
+
+class Var(Node):
+    
+    def __init__(self, token):
+        self.token = token
+        self.value = token.value
+
+    def __str__(self) -> str:
+        return f"Var({self.token}, {self.value})"
+
+class NoOp(Node):
+    pass
