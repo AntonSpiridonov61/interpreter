@@ -14,7 +14,4 @@ if __name__ == "__main__":
             x := 11;
         END.
     """
-    f = open('./textProgram/wrong2.txt')
-    text = f.read()
-    f.close()
     print(interpret(text))
